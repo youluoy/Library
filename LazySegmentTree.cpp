@@ -4,11 +4,11 @@ using namespace std;
 template<typename T> class LazySegmentTree {
     int n, sz;
     vector<T> dat, Lazy;
-    const T INF = numeric_limits<T>::max();
+    const T INF = (1 << 30) - 1;
 
     void eval(int k){//ノードkの値を更新して遅延配列を伝播
+        dat[k] += Lazy[k];//ココ
         if(Lazy[k]){
-            dat[k] += Lazy[k];
             if(k < n - 1) {
                 Lazy[2 * k + 1] += Lazy[k];
                 Lazy[2 * k + 2] += Lazy[k];
@@ -36,32 +36,37 @@ public:
 
     //[a,b)にxを一様加算
     //今見てるノードのインデックス:k  それに対応する元配列の区間[l,r)
+    //ノードの値を更新
 
     void add(int a, int b, T x, int k = 0, int l = 0, int r = -1){
         if(r < 0)r = n;
-        eval(k);
-        if(r <= a && b <= l){//更新区間を含まない
+        eval(k);//ココ
+        if(r <= a || b <= l){//更新区間にふくまれない
             return;
         }
-        if(l <= a && b <= r){//更新区間を完全に含む
+        if(a <= l && r <= b){//更新区間に完全に含まれる
             Lazy[k] += x;
             eval(k);
         }
         else {//一部更新区間を含む
             add(a, b, x, 2 * k + 1, l, (l + r) / 2);
             add(a, b, x, 2 * k + 2, (l + r) / 2, r);
+            if(k < n - 1){//ココ
+                dat[k] = min(dat[2 * k + 1], dat[2 * k + 2]);
+            }
         }
+        
     }
 
     //[a,b)のminを求める
     T query(int a, int b, int k = 0, int l = 0, int r = -1){
         if(r < 0)r = n;
-        if(r <= a && b <= l){
+        if(r <= a || b <= l){
             return INF;//目的の区間を含まないので単位元を返す
         }
 
         eval(k);
-        if(l <= a && b <= r){//遅延配列を更新してノードの値を返す
+        if(a <= l && r <= b){//遅延配列を更新してノードの値を返す
             return dat[k];
         }
         else {//左右に配って帰ってきた二つのminを返す
@@ -71,16 +76,3 @@ public:
         }
     }
 };
-
-int main(){
-    int N;
-    cin >> N;
-    vector<int> V(N);
-    for(int i = 0; i < N; i++){
-        cin >> V[i];
-    }
-    LazySegmentTree<int> seg(V);
-    
-
-    return 0;
-}

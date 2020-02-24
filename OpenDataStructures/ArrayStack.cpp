@@ -3,7 +3,7 @@
 #include"C:\Users\gucch\CompetitivePrograming\library\OpenDataStructures\Array.cpp"
 template<typename T>
 class ArrayStack{
-private:
+public:
     Array<T> a;
     int n;
 
@@ -14,9 +14,13 @@ private:
         }
         a = b;
     }
-public:
+
     ArrayStack(){
         n = 0;
+    }
+    ArrayStack(Array<T>& b){
+        n = b.size();
+        a = b;
     }
     int size(){
         return n;

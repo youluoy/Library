@@ -2,10 +2,10 @@
 #include<cstddef>
 template<typename T>
 class Array {
-private:
+public:
     T *a;
     int length;
-public:
+
     Array(){
         a = NULL;
         length = 0;

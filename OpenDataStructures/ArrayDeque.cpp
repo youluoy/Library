@@ -29,6 +29,9 @@ public:
         a[(j + i) % a.size()] = x;
         return y;
     }
+    int size(){
+        return n;
+    }
     void add(int i, T x){
         if(n + 1 >= a.size()) resize();
         if(i < n / 2){

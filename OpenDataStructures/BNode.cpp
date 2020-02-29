@@ -6,5 +6,6 @@ class BNode{
 public:
     BDeque<T> d;
     BNode *prev, *next;
+    BNode() {}
     BNode(int b) : d(b){ }
 };

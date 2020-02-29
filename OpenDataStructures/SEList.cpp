@@ -8,7 +8,7 @@ public:
     BNode<T> *u;
     int j;
     Location() {}
-    Location(Node *u, int j){
+    Location(BNode<T> *u, int j){
         this->u = u;
         this->j = j;
     }
@@ -23,10 +23,14 @@ public:
     SEList() : dummy(0){
         n = 0;
         b = 0;
+        dummy.next = &dummy;
+        dummy.prev = &dummy;
     }
     SEList(int c) : dummy(c){
         n = 0;
         b = c;
+        dummy.next = &dummy;
+        dummy.prev = &dummy;
     }
     void getLocation(int i, Location<T> &ell){
         if(i < n / 2){
@@ -96,6 +100,11 @@ public:
         u->d.add(l.j, x);
         n++;
     }
+    void remove(BNode<T> *w){
+        w->prev->next = w->next;
+        w->next->prev = w->prev;
+        delete w;
+    }
     T remove(int i){
         Location<T> l;
         getLocation(i, l);
@@ -120,6 +129,37 @@ public:
         }
         n--;
         return y;
+    }
+    BNode<T>* addBefore(BNode<T> *w){
+        BNode<T> *u = new BNode<T>(b);
+        u->prev = w->prev;
+        u->next = w;
+        u->next->prev = u;
+        u->prev->next = u;
+        return u;
+    }
+    void spread(BNode<T> *u){
+        BNode<T> *w = u;
+        for(int j = 0; j < b; j++){
+            w = w->next;
+        }
+        w = addBefore(w);
+        while(w != u){
+            while(w->d.size() < b){
+                w->d.add(0, w->prev->d.remove(w->prev->d.size() - 1));
+            }
+            w = w->prev;
+        }
+    }
+    void gather(BNode<T> *u){
+        BNode<T> *w = u;
+        for(int j = 0; j < b - 1; j++){
+            while(w->d.size() < b){
+                w->d.add(w->next->d.remove(0));
+            }
+            w = w->next;
+        }
+        remove(w);
     }
 
 };

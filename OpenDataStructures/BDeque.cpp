@@ -5,11 +5,15 @@
 template<typename T>
 class BDeque : public ArrayDeque<T> {
 public:
+    BDeque() {
+        ArrayDeque<T>::n = 0;
+        ArrayDeque<T>::j = 0;
+    }
     BDeque(int b){
-        n = 0;
-        j = 0;
+        ArrayDeque<T>::n = 0;
+        ArrayDeque<T>::j = 0;
         Array<int> z(b + 1);
-        a = z;
+        ArrayDeque<T>::a = z;
     }
     ~BDeque() { }
     void add(int i, T x){
@@ -18,6 +22,9 @@ public:
     bool add(T x){
         ArrayDeque<T>::add(size(), x);
         return true;
+    }
+    int size(){
+        return ArrayDeque<T>::size();
     }
     void resize() {}
 };
